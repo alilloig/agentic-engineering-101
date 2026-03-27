@@ -1,0 +1,5 @@
+# Build artifacts
+slides/*.html
+
+# Claude Code session state
+.remember/
