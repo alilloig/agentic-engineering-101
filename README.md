@@ -1,4 +1,4 @@
-# Claude Code 101
+# Agentic Engineering 101
 
 A collection of educational resources for learning agentic development with Claude Code.
 

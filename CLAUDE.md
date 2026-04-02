@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Claude Code 101 is a collection of educational resources for learning agentic development with Claude Code. It is a content-only project (no build system or runtime code).
+Agentic Engineering 101 is a collection of educational resources for learning agentic development with Claude Code. It is a content-only project (no build system or runtime code).
 
 ## Structure
 
