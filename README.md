@@ -11,7 +11,7 @@ Markdown files with introductory coverage of each course topic:
 - **01-ml-basics** — Tokens, transformers, context windows, and context rot
 - **02-installation** — CLI, Desktop app, and Chrome extension setup
 - **03-basic-usage** — Prompting, CLAUDE.md, settings, plan mode, and permissions
-- **04-day-0-setup** — Essential plugins (Superpowers, Claude Code Setup, Claude MD Management)
+- **04-day-0-setup** — Essential plugins for project setup, code quality, and git workflow
 - **05-expanding-claude-code** — Skills, AGENTS.md, hooks, plugins, and MCPs
 
 ### `slides/`
