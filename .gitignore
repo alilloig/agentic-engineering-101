@@ -1,5 +1,6 @@
-# Build artifacts
-slides/*.html
-
 # Claude Code session state
 .remember/
+.claude/
+
+# macOS
+.DS_Store

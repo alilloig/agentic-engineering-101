@@ -6,24 +6,16 @@ A collection of educational resources for learning agentic development with Clau
 
 ### `topics/`
 
-Markdown files with introductory coverage of each course topic:
+Markdown files with long-form coverage of each course topic:
 
-- **01-ml-basics** — Tokens, transformers, context windows, and context rot
-- **02-installation** — CLI, Desktop app, and Chrome extension setup
-- **03-basic-usage** — Prompting, CLAUDE.md, settings, plan mode, and permissions
-- **04-day-0-setup** — Essential plugins for project setup, code quality, and git workflow
-- **05-expanding-claude-code** — Skills, AGENTS.md, hooks, plugins, and MCPs
+- **01-intro** — Why this talk: the shift, the goal, and the cost of speed
+- **02-ml** — ML basics: evolution of AI, the Transformer, self-attention, tokens, context windows, and training
+- **03-the-harness** — What Claude Code actually is: the agent loop, tool calls, permissions, context window, CLAUDE.md, skills
+- **04-setup** — Install the three surfaces and drop in the `.claude.example` bundle
+- **99-future-topics** — Parking lot for a follow-up session (hooks, plugins, MCPs, advanced workflows)
 
-### `slides/`
+Slides for the talk live in Google Slides — not in this repo. The topic files are the source of truth; slide content is extracted from them.
 
-Marp presentation decks generated from `topics/` using the `marp-slide-content` skill and styled with the Sui dark theme via `sui-marp-theme`. Each deck is self-contained with embedded CSS.
+### `.claude.example/`
 
-Render with:
-
-```bash
-marp slides/01-ml-basics.md --html
-```
-
-### `claudefiles/`
-
-Example `~/.claude/` configuration for bootstrapping concepts taught in the course. *(Coming soon)*
+A working starter bundle for `~/.claude/` — `settings.json` with `auto` permission mode and auto-install of the day-zero plugins, a user-level `CLAUDE.md` template, and a `skills/` folder. Used live in chapter 04. Prototype of a standalone `claudefiles` repo that will get split out later.
