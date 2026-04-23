@@ -77,19 +77,56 @@ Keep each file under ~200 lines. When it grows beyond that, split with `@path/to
 
 **Bootstrap with `/init`.** In any new repo, run `/init` — Claude scans the codebase and generates a starter CLAUDE.md with build commands, test instructions, and conventions it discovers. If a CLAUDE.md already exists, it proposes improvements rather than overwriting. Run it once, then refine with what Claude can't discover: architectural decisions, team conventions, workflow rules.
 
+**AGENTS.md — the portable equivalent.** You may see an `AGENTS.md` file in repos that use Codex, Cursor, Zed, or one of 60+ other agent tools. It's an industry-standard convention for the same idea, now stewarded by the Agentic AI Foundation under the Linux Foundation. Claude Code reads CLAUDE.md, not AGENTS.md directly — but if your team already maintains an AGENTS.md for other tools, the recommended pattern is a one-line bridge: `@AGENTS.md` inside your CLAUDE.md pulls it in without duplicating content.
+
 ### Skills
 
-A skill is a `SKILL.md` file — YAML frontmatter plus plain-text instructions. The frontmatter tells Claude *when* to use the skill (via a `description` field); the body tells it *how*. No compiled code, no runtime. You write prose; Claude follows it.
+A skill is a playbook — a bundle of instructions, examples, and procedural knowledge for a specific task. When Claude hits a task that matches, it pulls the skill off the shelf and follows it. Think of skills as the way you teach Claude how *you* want specific jobs done — writing tests, reviewing code, drafting release notes — without having to re-explain every session.
+
+Mechanically, a skill is a `SKILL.md` file — YAML frontmatter plus plain-text instructions. The frontmatter tells Claude *when* to use the skill (via a `description` field); the body tells it *how*. No compiled code, no runtime. You write prose; Claude follows it.
 
 Skills live under `.claude/skills/` (project), `~/.claude/skills/` (personal), or inside a plugin's `skills/` folder. Invoke a skill by typing `/skill-name`, or let Claude load one automatically when its description matches the task.
 
 Full skill content only loads on invocation — the lightweight part that stays in every system prompt is just the description. This matters a lot for context budget: you can ship dozens of skills without drowning the window.
 
-### Subagents (and AGENTS.md)
+### Subagents
 
 A subagent is a specialist persona with its own system prompt, model preference, and tool restrictions. You spawn one with the `Task` tool to delegate a focused job — code review, a long-running investigation, a research task — and the subagent runs in its own context window. Its work doesn't pollute yours; only its final summary comes back.
 
-This is the stable, shipping version of the concept. AGENTS.md is an **experimental** convention for cataloging reusable subagent roles at the team level, gated by `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`. Worth knowing about; not worth building on yet.
+This is the stable, shipping version of delegation. There is also an experimental **agent teams** feature (gated by `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) that orchestrates multiple Claude Code sessions working in coordination on a shared task — a separate concept, and a different mechanism from AGENTS.md despite some online confusion. Worth knowing exists; not stable enough to build on yet.
+
+## Extending the harness
+
+Shaping the system prompt is one lever. The other is extending what the harness itself can do — adding new tools, new event handlers, new integrations. Three mechanisms to know.
+
+### Hooks
+
+Hooks are lifecycle handlers. They fire on events — `PreToolUse`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`, `Stop`, `PreCompact`, and ~25 others — and can inspect, modify, or block what the harness is about to do. Four handler types: shell command, HTTP POST, LLM prompt (a yes/no decision from a model), and subagent.
+
+Configured in `settings.json` under `hooks` with an event name, an optional regex matcher, and a handler. Canonical example: a `PreToolUse` hook with matcher `"Bash"` that runs a shell script denying `rm -rf` before the command ever reaches the OS. That is the shape. Format checks after edits, approval gates before pushes, desktop notifications on session end — hooks are the generic event system that lets you wire policy and automation around the loop.
+
+### Plugins
+
+A plugin bundles skills, commands, hooks, agents, and MCP servers into one installable package. Where loose `.claude/` config applies to a single project, a plugin is versioned, shareable, and publishable to a marketplace.
+
+Plugins install with `/plugin install <name>@<marketplace>`. Anthropic hosts the official marketplace (`claude-plugins-official`); private GitHub repos also work as marketplaces. Inside a plugin you will find `.claude-plugin/plugin.json` plus folders for whatever it ships — `skills/`, `commands/`, `agents/`, `hooks/hooks.json`, `.mcp.json`. The plugin name becomes a namespace prefix on its commands (`/my-plugin:deploy`), so nothing collides.
+
+The day-zero bundle in chapter 4 installs eight of these on first run.
+
+### MCPs (Model Context Protocol)
+
+MCP is an open standard for connecting AI tools to external data and services. Think USB-C for AI — Claude Code, Cursor, ChatGPT, VS Code, and others all speak it, so an MCP server built once integrates with all of them.
+
+Mechanically, an MCP server exposes tools to the harness. A GitHub server exposes `create_issue` and `search_repos`; a Notion server exposes `fetch_page`; a Chrome DevTools server exposes browser inspection. To the model, these look like any other tool call — the harness just has more things to wire up.
+
+Configure servers via `claude mcp add` or `.mcp.json`. Two live transports: **stdio** (local process) and **HTTP** (remote streamable HTTP). Scope determines visibility — `local` (private), `project` (team-shared in source control), `user` (all your projects).
+
+```bash
+claude mcp add --transport http stripe https://mcp.stripe.com
+claude mcp add --transport stdio airtable -- npx -y airtable-mcp-server
+```
+
+Every extension in this section ties back to the constraint from earlier: each one consumes context budget. Skills ship descriptions to every turn, hooks can inject messages, MCP tools add definitions on every request (five servers with twenty tools each adds up fast), and plugins combine all of the above. Enable what you need. Disable what you do not.
 
 ## Settings and commands in practice
 
@@ -135,4 +172,8 @@ You picked the tool to go faster. Managing the context window well is how you ac
 - [Permission Modes](https://code.claude.com/docs/en/permission-modes)
 - [Skills](https://code.claude.com/docs/en/skills)
 - [Subagents](https://code.claude.com/docs/en/subagents)
+- [Hooks](https://code.claude.com/docs/en/hooks)
+- [Plugins](https://code.claude.com/docs/en/plugins)
+- [MCP in Claude Code](https://code.claude.com/docs/en/mcp)
+- [Model Context Protocol](https://modelcontextprotocol.io/introduction)
 - [Claude Code CLI Reference](https://code.claude.com/docs/en/cli-usage)
