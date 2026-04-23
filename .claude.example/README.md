@@ -9,60 +9,32 @@ A working starter bundle for `~/.claude/` — the user-level config directory Cl
 ```
 .claude.example/
 ├── settings.json      # auto permission mode + day-zero plugin auto-install
-├── CLAUDE.md          # user-level memory template
-└── skills/            # where your personal skills go
-    └── README.md
+└── config.png         # snapshot of my /config settings (not in settings.json)
 ```
 
-### `settings.json`
+Just one config file and one reference screenshot — drop `settings.json` into `~/.claude/`, use `config.png` as a guide for the interactive settings, and you're done.
+
+## `settings.json`
 
 - `permissions.defaultMode: "auto"` — a classifier auto-approves safe actions and prompts for risky ones. **Requires a Max, Team, or Enterprise plan.** Drop to `"acceptEdits"` if you're on Pro.
 - `permissions.allow` — common safe commands pre-allowlisted (git, gh, npm/pnpm/yarn, tests, reads, the usual file-inspection Bash commands).
 - `permissions.deny` — `sudo`, `rm -rf`, outbound `curl`/`wget`/`ssh`, `.env` reads, private keys.
 - `autoInstallEnabledPlugins: true` plus `enabledPlugins` listing all eight day-zero plugins — first time Claude Code sees this file, it installs them all.
 
-### `CLAUDE.md`
-
-User-level memory applied to every project on your machine. Ships with commented sections for language preferences, workflow habits, communication style, and quality gates. Uncomment what you want; delete what you don't.
-
-### `skills/`
-
-Starts empty. Drop `SKILL.md` files here (each in its own subfolder, e.g. `skills/my-skill/SKILL.md`) for personal workflows that should be available across every project.
-
-## Install
-
-### Fresh install — no existing `~/.claude/`
-
-```bash
-cp -r .claude.example ~/.claude
-```
-
-Start a Claude Code session. On first launch the eight plugins install automatically.
-
-### Existing install — you already have a `~/.claude/`
-
-Cherry-pick:
-
-1. **`settings.json`** — merge keys into your existing `~/.claude/settings.json`. Key fields: `permissions.defaultMode`, `permissions.allow`, `permissions.deny`, `autoInstallEnabledPlugins`, `enabledPlugins`.
-2. **`CLAUDE.md`** — append the template sections you want into your existing `~/.claude/CLAUDE.md`.
-3. **`skills/`** — copy in any skills directories you don't already have.
-
-Restart `claude`. Plugins auto-install on the next session.
-
 ## The day-zero plugins
 
-The bundle auto-installs these on first launch:
+The bundle auto-installs these on first launch. Each one is a small opinionated piece that covers something you'd otherwise have to build yourself:
 
 | Plugin | What it does |
 |--------|--------------|
-| `claude-code-setup` | Scans your repo and recommends Claude Code automations to add |
-| `claude-md-management` | Audits and improves CLAUDE.md files |
-| `commit-commands` | AI-generated commits + PR workflow (requires `gh` CLI) |
-| `code-review` | Five parallel review agents for PR diffs |
-| `code-simplifier` | Autonomous refactor of recent changes for clarity |
-| `security-guidance` | Pre-tool hook that flags dangerous patterns before edits run |
-| `explanatory-output-style` | Adds educational insights during code generation |
-| `learning-output-style` | Interactive learning mode — asks you to write some of the code |
+| `claude-code-setup` | Scans your repo and recommends Claude Code automations (hooks, agents, skills) worth adding. Good first-run companion on any new codebase. |
+| `claude-md-management` | Audits, improves, and keeps your `CLAUDE.md` files tidy. Ships `/revise-claude-md` to turn session learnings into clean diffs. |
+| `commit-commands` | AI-generated commit messages plus a commit → push → PR workflow. Requires the `gh` CLI. |
+| `code-review` | Dispatches five parallel review agents (bugs, tests, docs, style, security) against a PR diff and aggregates the findings. |
+| `code-simplifier` | Autonomous refactor pass over recent changes — removes dead branches, collapses redundant abstractions, tightens naming. |
+| `security-guidance` | `PreToolUse` hook that flags dangerous patterns (leaky logs, unsanitized input, risky shell constructs) before the edit runs. |
+| `explanatory-output-style` | Adds short educational "Insight" callouts during code generation so you learn *why*, not just *what*. |
+| `learning-output-style` | Interactive mode — Claude sets up scaffolding and asks you to write the meaningful 5–10 lines yourself. Great for workshops and onboarding. |
 
 If autoinstall misbehaves on your setup, fall back to manual install inside a Claude session:
 
@@ -77,18 +49,41 @@ If autoinstall misbehaves on your setup, fall back to manual install inside a Cl
 /plugin install learning-output-style@claude-plugins-official
 ```
 
+## The rest of the config lives in `/config`
+
+`settings.json` only covers a slice of what Claude Code can be configured with. Things like theme, default model, output style, statusline, notification preferences, verbose mode, and a handful of others are managed through the interactive `/config` TUI and written to a separate config file that isn't meant to be hand-edited.
+
+Since I can't ship those as a copy-pasteable file, here's a snapshot of my own `/config` so you can mirror the settings that matter:
+
+![My /config snapshot](./config.png)
+
+Run `/config` inside a Claude Code session to open the same view on your machine and match whichever rows you want.
+
+## Install
+
+### Fresh install — no existing `~/.claude/`
+
+```bash
+mkdir -p ~/.claude
+cp .claude.example/settings.json ~/.claude/settings.json
+```
+
+Start a Claude Code session. On first launch the eight plugins install automatically. Then run `/config` and mirror the screenshot above for anything you care about.
+
+### Existing install — you already have a `~/.claude/`
+
+Merge the keys from `settings.json` into your existing `~/.claude/settings.json`. The ones that matter: `permissions.defaultMode`, `permissions.allow`, `permissions.deny`, `autoInstallEnabledPlugins`, `enabledPlugins`. Restart `claude` — plugins auto-install on the next session.
+
 ## Customizing
 
 After a few sessions you'll want to adjust things. The usual edits:
 
 - **Permissions** — add tool patterns you find yourself approving constantly to `allow`; tighten `deny` around any paths or commands that scare you.
-- **CLAUDE.md** — capture preferences as you notice them. Use the `claude-md-management` plugin's `/revise-claude-md` at session end to turn session learnings into clean diffs.
-- **Skills** — add a skill the first time you think "I'll need to explain this again next time."
 - **Plugins** — browse the marketplace with `/plugin` once you're comfortable. Remove any day-zero defaults you don't use.
+- **`/config`** — revisit it every few weeks. Model defaults and output styles are the two rows most worth tuning as your taste develops.
 
 ## References
 
 - [Claude Code Settings](https://code.claude.com/docs/en/settings)
 - [Plugins](https://code.claude.com/docs/en/plugins)
-- [Skills](https://code.claude.com/docs/en/skills)
 - [Permission Modes](https://code.claude.com/docs/en/permission-modes)
