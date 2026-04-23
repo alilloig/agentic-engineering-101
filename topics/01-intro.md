@@ -28,7 +28,7 @@ The second is theoretical: enough grounding in how these systems actually work -
 
 When you really understand how to use these tools, you can produce outcomes as good as the ones you used to craft by hand -- at a fraction of the time. That is not a marketing claim. It is the plain reality of watching a well-configured agent work on a well-scoped task, with someone who knows what they are doing at the wheel.
 
-This is the payoff. It is big, and it is why the rest of this talk is worth your attention. Everything that follows -- the ML basics, the installation ceremony, the CLAUDE.md conventions, the plugins, the MCP servers -- is in service of that outcome: producing better software, faster.
+This is the payoff. It is big, and it is why the rest of this talk is worth your attention. Everything that follows -- the ML basics, the installation ceremony, the `CLAUDE.md` conventions, the plugins, the MCP servers -- is in service of that outcome: producing better software, faster.
 
 ## The Price
 

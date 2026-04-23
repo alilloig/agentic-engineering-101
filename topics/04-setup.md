@@ -22,7 +22,7 @@ Verify with `claude --version` and `claude doctor`.
 
 macOS installer (Intel + Apple Silicon): [download](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect). Open the `.dmg`, drag Claude to Applications, launch it. Sign in with your Claude account and click the **Code** tab.
 
-The Desktop app and the CLI share the same engine, the same CLAUDE.md, and the same settings.
+The Desktop app and the CLI share the same engine, the same `CLAUDE.md`, and the same settings.
 
 ### Chrome extension
 
@@ -49,7 +49,7 @@ Start any session. `autoInstallEnabledPlugins: true` picks up the `enabledPlugin
 Don't overwrite — cherry-pick:
 
 - **`settings.json`** — merge the additions into your existing `~/.claude/settings.json`. Pay particular attention to `permissions.defaultMode`, `permissions.allow`, `permissions.deny`, `autoInstallEnabledPlugins`, and `enabledPlugins`.
-- **`CLAUDE.md`** — append the template sections you want into your existing user-level CLAUDE.md, uncommenting the ones you want active.
+- **`CLAUDE.md`** — append the template sections you want into your existing user-level `CLAUDE.md`, uncommenting the ones you want active.
 - **`skills/`** — copy anything you don't already have.
 
 Restart `claude` and the plugins auto-install on the next session.

@@ -2,7 +2,7 @@
 
 Claude Code, Cursor, Cline, Codex, Aider — if you strip away the UI differences, these are all the same thing: an agent harness. A loop wrapped around a large language model. The model can't do anything on its own — it can only produce text. The harness is what turns that text into real actions against your files, your terminal, and your browser.
 
-This chapter opens that black box. Once you see how the loop works, every other concept — permissions, context windows, CLAUDE.md, skills — falls out of the same mechanics. The pieces stop being a menu of features to memorize and become different levers on the same thing.
+This chapter opens that black box. Once you see how the loop works, every other concept — permissions, context windows, `CLAUDE.md`, skills — falls out of the same mechanics. The pieces stop being a menu of features to memorize and become different levers on the same thing.
 
 ## The harness is just a loop
 
@@ -51,7 +51,7 @@ Every turn through the loop appends to the message history. System prompt, user 
 
 Three things fill the window:
 
-- **The system prompt.** Base instructions, tool schemas, CLAUDE.md files, MCP tool definitions. This is paid upfront on every turn.
+- **The system prompt.** Base instructions, tool schemas, `CLAUDE.md` files, MCP tool definitions. This is paid upfront on every turn.
 - **The conversation.** Every message, every tool call, every file Claude reads — all of it stays in the window until the session ends or you compact it.
 - **Large tool outputs.** Dumping a 10,000-line log into the conversation is how you waste context fastest.
 
@@ -63,7 +63,7 @@ When the window gets crowded, the model starts to degrade. It forgets instructio
 
 The system prompt is not a fixed string. Claude Code builds it up from several sources — and the interesting ones are under your control.
 
-### CLAUDE.md
+### `CLAUDE.md`
 
 A markdown file Claude reads at the start of every session. It tells Claude what this project is and how you want things done. Project structure, coding conventions, build commands, workflow constraints.
 
@@ -75,9 +75,9 @@ Three scopes, highest precedence first:
 
 Keep each file under ~200 lines. When it grows beyond that, split with `@path/to/file` imports or move rules into `.claude/rules/`.
 
-**Bootstrap with `/init`.** In any new repo, run `/init` — Claude scans the codebase and generates a starter CLAUDE.md with build commands, test instructions, and conventions it discovers. If a CLAUDE.md already exists, it proposes improvements rather than overwriting. Run it once, then refine with what Claude can't discover: architectural decisions, team conventions, workflow rules.
+**Bootstrap with `/init`.** In any new repo, run `/init` — Claude scans the codebase and generates a starter `CLAUDE.md` with build commands, test instructions, and conventions it discovers. If a `CLAUDE.md` already exists, it proposes improvements rather than overwriting. Run it once, then refine with what Claude can't discover: architectural decisions, team conventions, workflow rules.
 
-**AGENTS.md — the portable equivalent.** You may see an `AGENTS.md` file in repos that use Codex, Cursor, Zed, or one of 60+ other agent tools. It's an industry-standard convention for the same idea, now stewarded by the Agentic AI Foundation under the Linux Foundation. Claude Code reads CLAUDE.md, not AGENTS.md directly — but if your team already maintains an AGENTS.md for other tools, the recommended pattern is a one-line bridge: `@AGENTS.md` inside your CLAUDE.md pulls it in without duplicating content.
+**`AGENTS.md` — the portable equivalent.** You may see an `AGENTS.md` file in repos that use Codex, Cursor, Zed, or one of 60+ other agent tools. It's an industry-standard convention for the same idea, now stewarded by the Agentic AI Foundation under the Linux Foundation. Claude Code reads `CLAUDE.md`, not `AGENTS.md` directly — but if your team already maintains an `AGENTS.md` for other tools, the recommended pattern is a one-line bridge: `@AGENTS.md` inside your `CLAUDE.md` pulls it in without duplicating content.
 
 ### Skills
 
@@ -93,7 +93,7 @@ Full skill content only loads on invocation — the lightweight part that stays 
 
 A subagent is a specialist persona with its own system prompt, model preference, and tool restrictions. You spawn one with the `Task` tool to delegate a focused job — code review, a long-running investigation, a research task — and the subagent runs in its own context window. Its work doesn't pollute yours; only its final summary comes back.
 
-This is the stable, shipping version of delegation. There is also an experimental **agent teams** feature (gated by `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) that orchestrates multiple Claude Code sessions working in coordination on a shared task — a separate concept, and a different mechanism from AGENTS.md despite some online confusion. Worth knowing exists; not stable enough to build on yet.
+This is the stable, shipping version of delegation. There is also an experimental **agent teams** feature (gated by `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) that orchestrates multiple Claude Code sessions working in coordination on a shared task — a separate concept, and a different mechanism from `AGENTS.md` despite some online confusion. Worth knowing exists; not stable enough to build on yet.
 
 ## Extending the harness
 
@@ -142,7 +142,7 @@ Commit `settings.json` with the project. Keep `settings.local.json` personal for
 
 **Slash commands** you should know cold:
 
-- `/init` — generate a starter CLAUDE.md for the current repo.
+- `/init` — generate a starter `CLAUDE.md` for the current repo.
 - `/context` — show current context window usage.
 - `/compact` — summarize the conversation and continue in a fresh window.
 - `/plugin install <name>@<marketplace>` — add a plugin.
@@ -150,7 +150,7 @@ Commit `settings.json` with the project. Keep `settings.local.json` personal for
 
 ## Context management is the newest core skill
 
-Every idea in this chapter comes back to the same bottleneck: the context window. Tool calls consume tokens. Large outputs consume tokens. Your CLAUDE.md consumes tokens on every turn. MCP servers consume tokens on every turn. A sprawling conversation with two wrong paths taken and abandoned burns tokens you can't get back.
+Every idea in this chapter comes back to the same bottleneck: the context window. Tool calls consume tokens. Large outputs consume tokens. Your `CLAUDE.md` consumes tokens on every turn. MCP servers consume tokens on every turn. A sprawling conversation with two wrong paths taken and abandoned burns tokens you can't get back.
 
 In the old workflow, the limit on your output was how fast you could type. In this workflow, the limit is how well you manage the model's attention. **Keeping context clean is the newest core engineering skill** — as important as knowing your language, your framework, and your tools.
 
@@ -159,7 +159,7 @@ In practice that looks like:
 - Start new tasks in a fresh session.
 - Use plan mode to avoid wasted tool calls.
 - Run `/compact` when the session has drifted.
-- Trim CLAUDE.md. Disable unused MCP servers. Turn off skills you don't reach for.
+- Trim `CLAUDE.md`. Disable unused MCP servers. Turn off skills you don't reach for.
 - Scope tool permissions tightly so the model doesn't have to ask constantly.
 
 You picked the tool to go faster. Managing the context window well is how you actually do.
